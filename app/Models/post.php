@@ -11,6 +11,7 @@ class post extends Model
 
     // protected $fillable = ['title','excerpt','body'];
     protected $guarded = ['id'];
+    protected $with = ['category','user'];
 
     public function category()
     {
@@ -21,4 +22,26 @@ class post extends Model
     {
         return $this->belongsTo(user::class);
     }
+
+    public function scopefilter($query,array $filters)
+    {
+        //menggunakan versi isset
+    $query->when($filters['search'] ?? false, function($query,$search) {
+        return $query->Where('title','like','%' .$search . '%')
+        ->orWhere('body','like','%' .$search . '%');
+    });
+    //menggunakan versi calback
+    $query->when($filters['category'] ?? false, function($query,$category) {
+        return $query->whereHas('category',function($query) use ($category) {
+            $query->where('slug',$category);
+        });
+    });
+//menggunakan versi arrow function
+    $query->when($filters['author'] ?? false,fn($query,$author) =>
+    $query->whereHash('author',fn($query) =>
+    $query->where('username',$author)
+            )
+        );
+    }
+    
 }
