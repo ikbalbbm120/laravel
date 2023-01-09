@@ -2,29 +2,50 @@
 @section('container')
 
 <div class="row justify-content-center">
-    <div class="col-md-5">
+    <div class="col-lg-5">
         <main class="form-registration">
             <h1 class="h3 mb-3 fw-normal text-center">registration form</h1>
-            <form>
+            <form action="/register" method="POST">
+                @csrf
             <div class="form-floating">
-                <input type="text" name="nama" class="form-control" id="nama" placeholder="nama">
+                <input type="text" name="nama" class="form-control rounded-top @error('nama')is-invalid @enderror" id="nama" placeholder="nama" required value="{{ old('nama') }}">
                 <label for="nama">nama</label>
+                @error('nama')
+                <div class="invalid-feedback">
+                    {{ $message }}
+            </div>
+            @enderror
             </div>
             <div class="form-floating">
-                <input type="text" name="username" class="form-control" id="username" placeholder="username">
+                <input type="text" name="username" class="form-control @error('username')is-invalid @enderror" id="username" placeholder="username" required value="{{ old('username') }}">
                 <label for="username">username</label>
+                @error('username')
+                <div class="invalid-feedback">
+                    {{ $message }}
+            </div>
+            @enderror
             </div>
             <div class="form-floating">
-                <input type="email" name="email" class="form-control" id="email" placeholder="name@example.com">
+                <input type="email" name="email" class="form-control @error('email')is-invalid @enderror" id="email" placeholder="name@example.com" required value="{{ old('email') }}">
                 <label for="email">Email address</label>
+                @error('email')
+                <div class="invalid-feedback">
+                    {{ $message }}
+            </div>
+            @enderror
             </div>
             <div class="form-floating">
-                <input type="password" name="password" class="form-control" id="password" placeholder="Password">
+                <input type="password" name="password" class="form-control rounded-bottom @error('password')is-invalid @enderror" id="password" placeholder="Password" required>
                 <label for="password">Password</label>
+                @error('password')
+                <div class="invalid-feedback">
+                    {{ $message }}
+            </div>
+            @enderror
             </div>
             <button class="w-100 btn btn-lg btn-primary" type="submit">login</button>
             </form>
-            <small class="d-block text-center mt-3">belum di registrasi <a href="/registrasi">registrasi sekarang</a></small>
+            <small class="d-block text-center mt-3">sudah di registrasi <a href="/login">login</a></small>
             </main>
     </div>
 </div>

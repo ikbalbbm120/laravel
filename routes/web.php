@@ -1,9 +1,12 @@
 <?php
-use  App\Http\Controllers\postcontroller;
+
+use App\Models\category;
 use  App\Http\Controllers\login;
 use App\Http\Controllers\register;
-use App\Models\category;
 use Illuminate\Support\Facades\Route;
+use  App\Http\Controllers\postcontroller;
+use App\Http\Controllers\AdminCategoryController;
+use App\Http\Controllers\DashboardPostController;
 
 
 Route::get('/', function () {
@@ -44,13 +47,18 @@ route::get('/categories/{category:slug}',function(category $category) {
     ]);
 });
 
-route::get('/authors/{author::username}',function(user $author) {
-    return view('posts',[
-        'title' => "post by author : $author->name",
-        'active' => 'posts',
-        'posts' => $author->posts->load('category','user'),
-    ]);
-});
+route::get('/login',[login::class,'index'])->name('login')->middleware('guest');
+route::post('/login',[login::class,'authenticate']);
+route::post('/logout',[login::class,'logout']);
 
-route::get('/login',[login::class,'index']);
-route::get('/register',[register::class,'index']);
+route::get('/register',[register::class,'index'])->middleware('guest');
+route::post('/register',[register::class,'store']);
+
+route::get('/dashboard',function() {
+    return view('dashboard.index');
+})->middleware('auth');
+
+route::get('/dashboard/posts/checkslug', [DashboardPostController::class,'CheckSlug'])->middleware('auth');
+route::resource('/dashboard/posts',DashboardPostController::class)->middleware('auth');
+
+route::resource('/dashboard/categories', AdminCategoryController::class)->except('show')->middleware('admin');
